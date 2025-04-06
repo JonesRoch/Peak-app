@@ -28,27 +28,53 @@
       height: 100%;
       border-radius: 12px;
     }
+
+    /* Ajustando layout para a página web mais interativa */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .section {
+      width: 45%;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100 text-gray-800">
 
-  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-xl space-y-6">
-    <h1 class="text-2xl font-bold text-center">Gestão de Ciclo Menstrual e Forma</h1>
+  <!-- Seção de Login -->
+  <div class="container">
+    <div class="section w-full max-w-sm">
+      <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
+      <label class="block mb-2">Email:</label>
+      <input type="email" id="loginEmail" class="w-full p-2 border rounded mb-4" placeholder="exemplo@email.com">
+      
+      <label class="block mb-2">Senha:</label>
+      <input type="password" id="loginSenha" class="w-full p-2 border rounded mb-6" placeholder="********">
 
-    <!-- Informações da Atleta -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Informações da Atleta</h2>
-      <label class="block mb-1">Email:</label>
-      <input type="email" id="email" class="w-full p-2 border rounded mb-4" placeholder="exemplo@email.com">
+      <button onclick="fazerLogin()" class="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600 transition">
+        Entrar
+      </button>
     </div>
+  </div>
 
-    <!-- Ciclo Menstrual -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Informações do Ciclo Menstrual</h2>
-      <label class="block mb-1">Data do último período:</label>
+  <!-- Seção Principal (Gestão de Ciclo Menstrual e Forma) -->
+  <div class="container mt-8">
+    <!-- Informações da Atleta e Ciclo Menstrual -->
+    <div class="section w-full max-w-lg">
+      <h2 class="text-xl font-semibold mb-4">Informações da Atleta e Ciclo Menstrual</h2>
+      <label class="block mb-2">Email:</label>
+      <input type="email" id="email" class="w-full p-2 border rounded mb-4" placeholder="exemplo@email.com">
+
+      <label class="block mb-2">Data do último período:</label>
       <input type="date" id="dataUltimoPeriodo" class="w-full p-2 border rounded mb-4">
 
-      <label class="block mb-1">Duração média do ciclo (em dias):</label>
+      <label class="block mb-2">Duração média do ciclo (em dias):</label>
       <input type="number" id="duracaoCiclo" value="28" class="w-full p-2 border rounded mb-4">
 
       <button onclick="calcularCiclo()" class="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600 transition">
@@ -62,15 +88,13 @@
       </div>
     </div>
 
-    <hr class="my-4">
-
-    <!-- Dados do Treino -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Dados do Treino</h2>
-      <label class="block mb-1">Duração do treino (min):</label>
+    <!-- Dados do Treino e Gráfico Carga -->
+    <div class="section w-full max-w-lg">
+      <h2 class="text-xl font-semibold mb-4">Dados do Treino</h2>
+      <label class="block mb-2">Duração do treino (min):</label>
       <input type="number" id="duracaoTreino" class="w-full p-2 border rounded mb-4">
 
-      <label class="block mb-1">RPE (1-10):</label>
+      <label class="block mb-2">RPE (1-10):</label>
       <input type="number" id="rpe" class="w-full p-2 border rounded mb-4">
 
       <button onclick="avaliarForma()" class="bg-green-500 text-white w-full py-2 rounded hover:bg-green-600 transition">
@@ -98,6 +122,18 @@
   <!-- JS -->
   <script>
     let cargaHistorico = [];
+
+    function fazerLogin() {
+      const email = document.getElementById("loginEmail").value;
+      const senha = document.getElementById("loginSenha").value;
+
+      if (email && senha) {
+        alert("Login bem-sucedido!");
+        // Aqui você pode adicionar a lógica de autenticação real
+      } else {
+        alert("Por favor, preencha os campos de email e senha.");
+      }
+    }
 
     function calcularCiclo() {
       const email = document.getElementById("email").value;
