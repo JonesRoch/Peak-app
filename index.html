@@ -10,8 +10,25 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Link para o CSS externo dentro da pasta 'css' -->
+  <!-- Link para o CSS externo -->
   <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .progress-bar {
+      height: 25px;
+      border-radius: 12px;
+      background: #f3f4f6;
+    }
+    .progress-bar span {
+      display: block;
+      height: 100%;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 flex items-center justify-center min-h-screen">
 
@@ -38,6 +55,11 @@
         Calcular Fase do Ciclo
       </button>
       <p id="resultadoCiclo" class="mt-2 text-sm text-gray-700"></p>
+
+      <!-- Barra de progresso com as fases do ciclo menstrual -->
+      <div class="progress-bar mt-4">
+        <span id="barraCiclo" class="bg-blue-500"></span>
+      </div>
     </div>
 
     <hr class="my-4">
@@ -55,11 +77,28 @@
         Analisar Forma
       </button>
       <p id="resultadoForma" class="mt-2 text-sm text-gray-700"></p>
+
+      <!-- Gráfico Carga Aguda vs Carga Crônica -->
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-2">Relação Carga Aguda vs Carga Crônica</h3>
+        <div class="space-y-4">
+          <div class="flex items-center">
+            <div class="w-1/4 text-sm font-semibold">Carga Aguda</div>
+            <div class="w-3/4 bg-green-500 h-4 rounded" id="graficoCargaAguda"></div>
+          </div>
+          <div class="flex items-center">
+            <div class="w-1/4 text-sm font-semibold">Carga Crônica</div>
+            <div class="w-3/4 bg-yellow-500 h-4 rounded" id="graficoCargaCronica"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- JS -->
   <script>
+    let cargaHistorico = [];
+
     function calcularCiclo() {
       const email = document.getElementById("email").value;
       const dataUltimoPeriodo = new Date(document.getElementById("dataUltimoPeriodo").value);
@@ -69,24 +108,40 @@
       const diaDoCiclo = diasPassados % duracaoCiclo;
 
       let fase = "";
+      let cor = "";
       if (diaDoCiclo <= 5) {
         fase = "Menstruação";
+        cor = "bg-red-500";
       } else if (diaDoCiclo <= 13) {
         fase = "Folicular";
+        cor = "bg-yellow-500";
       } else if (diaDoCiclo <= 16) {
         fase = "Ovulação";
+        cor = "bg-green-500";
       } else {
         fase = "Lútea";
+        cor = "bg-purple-500";
       }
 
       document.getElementById("resultadoCiclo").innerText =
         `Email: ${email}\nDia ${diaDoCiclo} do ciclo - Fase: ${fase}`;
+
+      // Atualizando barra de progresso
+      const progresso = (diaDoCiclo / duracaoCiclo) * 100;
+      const barraCiclo = document.getElementById("barraCiclo");
+      barraCiclo.style.width = `${progresso}%`;
+      barraCiclo.classList.remove("bg-blue-500", "bg-yellow-500", "bg-red-500", "bg-green-500", "bg-purple-500");
+      barraCiclo.classList.add(cor);
     }
 
     function avaliarForma() {
       const duracao = parseFloat(document.getElementById("duracaoTreino").value);
       const rpe = parseFloat(document.getElementById("rpe").value);
       const carga = duracao * rpe;
+
+      // Adicionando carga ao histórico
+      cargaHistorico.push(carga);
+      if (cargaHistorico.length > 7) cargaHistorico.shift();  // Limita o histórico a 7 dias (carga semanal)
 
       let status = "";
       if (carga >= 400) {
@@ -99,6 +154,16 @@
 
       document.getElementById("resultadoForma").innerText =
         `Carga do treino: ${carga} - ${status}`;
+
+      // Atualizando gráfico Carga Aguda vs Carga Crônica
+      const cargaAguda = cargaHistorico[cargaHistorico.length - 1];
+      const cargaCronica = cargaHistorico.reduce((sum, val) => sum + val, 0) / cargaHistorico.length;
+
+      const cargaAgudaWidth = Math.min(cargaAguda / 500, 1) * 100;  // Máximo de 100%
+      const cargaCronicaWidth = Math.min(cargaCronica / 500, 1) * 100;  // Máximo de 100%
+
+      document.getElementById("graficoCargaAguda").style.width = `${cargaAgudaWidth}%`;
+      document.getElementById("graficoCargaCronica").style.width = `${cargaCronicaWidth}%`;
     }
   </script>
 </body>
