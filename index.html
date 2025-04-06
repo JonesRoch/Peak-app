@@ -2,76 +2,229 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Ciclo Menstrual e Forma</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #f9f4f8;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        h1, h2 {
+            color: #8e44ad;
+            border-bottom: 2px solid #e8daef;
+            padding-bottom: 10px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #732d91;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #e8daef;
+            white-space: pre-line;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e8daef;
+            margin: 25px 0;
+        }
+        
+        .two-columns {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .two-columns .form-group {
+            flex: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .two-columns {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>Informações da Atleta</h2>
-    <label>Email:</label>
-    <input type="email" id="email"><br><br>
-
-    <h2>Informações do Ciclo Menstrual</h2>
-    <label>Data do último período:</label>
-    <input type="date" id="dataUltimoPeriodo"><br><br>
-
-    <label>Duração média do ciclo (em dias):</label>
-    <input type="number" id="duracaoCiclo" value="28"><br><br>
-
-    <button onclick="calcularCiclo()">Calcular Fase do Ciclo</button>
-    <p id="resultadoCiclo"></p>
-
-    <hr>
-
-    <h2>Dados do Treino</h2>
-    <label>Duração do treino (min):</label>
-    <input type="number" id="duracaoTreino"><br><br>
-
-    <label>RPE (1-10):</label>
-    <input type="number" id="rpe"><br><br>
-
-    <button onclick="avaliarForma()">Analisar Forma</button>
-    <p id="resultadoForma"></p>
+    <h1>Gestão de Ciclo Menstrual e Forma</h1>
+    
+    <div class="container">
+        <h2>Informações da Atleta</h2>
+        <div class="two-columns">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" placeholder="Digite seu nome">
+            </div>
+            <div class="form-group">
+                <label for="idade">Idade:</label>
+                <input type="number" id="idade" placeholder="Digite sua idade">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="seuemail@exemplo.com">
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Informações do Ciclo Menstrual</h2>
+        <div class="form-group">
+            <label for="dataUltimoPeriodo">Data do último período:</label>
+            <input type="date" id="dataUltimoPeriodo">
+        </div>
+        <div class="form-group">
+            <label for="duracaoCiclo">Duração média do ciclo (em dias):</label>
+            <input type="number" id="duracaoCiclo" value="28">
+        </div>
+        <button onclick="calcularCiclo()">Calcular Fase do Ciclo</button>
+        <div id="resultadoCiclo" class="result"></div>
+    </div>
+    
+    <div class="container">
+        <h2>Dados do Treino</h2>
+        <div class="form-group">
+            <label for="duracaoTreino">Duração do treino (min):</label>
+            <input type="number" id="duracaoTreino" placeholder="ex: 60">
+        </div>
+        <div class="form-group">
+            <label for="rpe">RPE (1-10):</label>
+            <input type="number" id="rpe" min="1" max="10" placeholder="Classificação de esforço percebido">
+        </div>
+        <button onclick="avaliarForma()">Analisar Forma</button>
+        <div id="resultadoForma" class="result"></div>
+    </div>
 
     <script>
         function calcularCiclo() {
             const email = document.getElementById("email").value;
+            const nome = document.getElementById("nome").value;
+            const idade = document.getElementById("idade").value;
             const dataUltimoPeriodo = new Date(document.getElementById("dataUltimoPeriodo").value);
             const duracaoCiclo = parseInt(document.getElementById("duracaoCiclo").value);
+            
+            // Validação básica
+            if (!dataUltimoPeriodo || isNaN(dataUltimoPeriodo.getTime())) {
+                document.getElementById("resultadoCiclo").innerText = "Por favor, insira uma data válida.";
+                return;
+            }
+            
             const hoje = new Date();
-
             const diasPassados = Math.floor((hoje - dataUltimoPeriodo) / (1000 * 60 * 60 * 24));
             const diaDoCiclo = diasPassados % duracaoCiclo;
-
+            
             let fase = "";
+            let dicas = "";
+            
             if (diaDoCiclo <= 5) {
                 fase = "Menstruação";
+                dicas = "Dica: Considere treinos de intensidade moderada e foque em recuperação.";
             } else if (diaDoCiclo <= 13) {
                 fase = "Folicular";
+                dicas = "Dica: Bom período para treinos de alta intensidade e força.";
             } else if (diaDoCiclo <= 16) {
                 fase = "Ovulação";
+                dicas = "Dica: Você pode estar com mais energia. Ótimo momento para desafios.";
             } else {
                 fase = "Lútea";
+                dicas = "Dica: Foco em treinos de resistência e monitore a recuperação.";
             }
-
-            document.getElementById("resultadoCiclo").innerText = `Email: ${email}\nDia ${diaDoCiclo} do ciclo - Fase: ${fase}`;
+            
+            const dadosAtleta = nome ? `Nome: ${nome}\n` : "";
+            const dadosIdade = idade ? `Idade: ${idade} anos\n` : "";
+            
+            document.getElementById("resultadoCiclo").innerText = 
+                `${dadosAtleta}${dadosIdade}Email: ${email}\nDia ${diaDoCiclo} do ciclo - Fase: ${fase}\n${dicas}`;
         }
-
+        
         function avaliarForma() {
             const duracao = parseFloat(document.getElementById("duracaoTreino").value);
             const rpe = parseFloat(document.getElementById("rpe").value);
+            
+            // Validação básica
+            if (isNaN(duracao) || isNaN(rpe)) {
+                document.getElementById("resultadoForma").innerText = "Por favor, preencha todos os campos corretamente.";
+                return;
+            }
+            
             const carga = duracao * rpe;
-
             let status = "";
+            let recomendacao = "";
+            
             if (carga >= 400) {
                 status = "Alta carga - Risco de fadiga (baixa de forma)";
+                recomendacao = "Recomendação: Considere aumentar seu tempo de recuperação e monitorar sinais de overtraining.";
             } else if (carga >= 200) {
                 status = "Carga ideal - Pico de forma";
+                recomendacao = "Recomendação: Continue com este padrão de treino para manter o desempenho ótimo.";
             } else {
                 status = "Carga leve - Possível subtreino";
+                recomendacao = "Recomendação: Considere aumentar gradualmente a intensidade ou duração dos treinos.";
             }
-
-            document.getElementById("resultadoForma").innerText = `Carga do treino: ${carga} - ${status}`;
+            
+            document.getElementById("resultadoForma").innerText = 
+                `Carga do treino: ${carga} (${duracao} min × ${rpe} RPE)\nStatus: ${status}\n${recomendacao}`;
         }
     </script>
 </body>
 </html>
-
