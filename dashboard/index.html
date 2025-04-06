@@ -1,29 +1,143 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard de Performance</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Performance</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Adicionando alguns estilos personalizados */
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
 
-  <!-- Cabeçalho do Dashboard -->
-  <header class="bg-blue-600 text-white p-4 text-center">
-    <h1 class="text-xl font-semibold">Dashboard de Performance</h1>
-  </header>
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Esforço Relativo -->
+            <div class="card">
+                <h2 class="text-xl font-semibold">Esforço Relativo</h2>
+                <p id="esforcoRelativo" class="text-3xl font-bold">65%</p>
+            </div>
 
-  <!-- Informações da Performance -->
-  <div class="container mx-auto p-8">
-    <h2 class="text-2xl font-bold">Resumo da Performance</h2>
-    <p class="mt-4">Aqui você pode mostrar gráficos, dados e outras informações sobre o desempenho da atleta.</p>
-  </div>
+            <!-- Fase do Ciclo Menstrual -->
+            <div class="card">
+                <h2 class="text-xl font-semibold">Fase do Ciclo Menstrual</h2>
+                <div id="faseCiclo" class="flex items-center space-x-2">
+                    <p id="faseCicloTexto" class="text-lg">Fase Folicular</p>
+                    <span id="setaFase" class="text-3xl text-green-500">↑</span>
+                </div>
+            </div>
 
-  <script>
-    // Você pode adicionar mais funcionalidades de JS aqui
-  </script>
+            <!-- Gráfico de Carga Aguda e Carga Crônica -->
+            <div class="card">
+                <h2 class="text-xl font-semibold">Carga Aguda vs Carga Crônica</h2>
+                <canvas id="graficoCarga"></canvas>
+                <div id="barraIndicadora" class="mt-4 h-2 bg-red-500"></div>
+            </div>
 
+            <!-- Expectativa do Pico de Forma -->
+            <div class="card">
+                <h2 class="text-xl font-semibold">Expectativa do Pico de Forma</h2>
+                <p id="picoForma" class="text-lg">Pico esperado: 10 dias após a ovulação</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para calcular a fase do ciclo e a seta
+        function calcularFaseCiclo() {
+            const hoje = new Date();
+            const ultimaMenstruacao = new Date('2025-03-01'); // Exemplo de data do último período
+            const duracaoCiclo = 28; // Ciclo menstrual de 28 dias
+
+            const diasPassados = Math.floor((hoje - ultimaMenstruacao) / (1000 * 60 * 60 * 24));
+            const diaDoCiclo = diasPassados % duracaoCiclo;
+
+            let fase = '';
+            let seta = '↓';
+            if (diaDoCiclo <= 5) {
+                fase = 'Menstruação';
+                seta = '↓'; // A fase menstruação é quando se espera que a forma esteja mais baixa
+            } else if (diaDoCiclo <= 13) {
+                fase = 'Folicular';
+                seta = '↑'; // A fase folicular é quando se espera que a forma esteja subindo
+            } else if (diaDoCiclo <= 16) {
+                fase = 'Ovulação';
+                seta = '↑'; // A fase de ovulação também é quando a forma está no pico
+            } else {
+                fase = 'Lútea';
+                seta = '↓'; // Na fase lútea, a forma tende a cair
+            }
+
+            // Atualiza a UI
+            document.getElementById('faseCicloTexto').innerText = fase;
+            document.getElementById('setaFase').innerText = seta;
+        }
+
+        // Gráfico de Carga Aguda vs Carga Crônica
+        function gerarGraficoCarga() {
+            var ctx = document.getElementById('graficoCarga').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['1', '2', '3', '4', '5', '6', '7'],
+                    datasets: [
+                        {
+                            label: 'Carga Aguda',
+                            data: [50, 70, 80, 60, 90, 100, 110],
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: false,
+                        },
+                        {
+                            label: 'Carga Crônica',
+                            data: [50, 55, 60, 65, 70, 75, 80],
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            fill: false,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Dias'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Carga'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Atualizar a barra indicadora com base na carga
+            const cargaRecente = 110; // Último valor de carga aguda
+            let cor = 'bg-green-500';
+            if (cargaRecente > 100) cor = 'bg-red-500';
+            else if (cargaRecente > 70) cor = 'bg-yellow-500';
+
+            document.getElementById('barraIndicadora').className = `mt-4 h-2 ${cor}`;
+        }
+
+        // Gerar o gráfico e calcular a fase do ciclo ao carregar
+        window.onload = function() {
+            calcularFaseCiclo();
+            gerarGraficoCarga();
+        }
+    </script>
 </body>
 </html>
-
-"Criar a página de dashboard"
