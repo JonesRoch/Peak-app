@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestão de Ciclo Menstrual e Forma</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
         
@@ -21,7 +22,7 @@
             margin: 0 auto;
         }
         
-        h1, h2 {
+        h1, h2, h3 {
             color: #8e44ad;
             border-bottom: 2px solid #e8daef;
             padding-bottom: 10px;
@@ -207,9 +208,64 @@
             border: 1px solid #e74c3c;
         }
         
+        /* Carga crônica vs aguda */
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+            position: relative;
+        }
+        
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+        
+        .ratio-indicator {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .day-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .day-input {
+            text-align: center;
+        }
+        
+        .day-input label {
+            font-size: 14px;
+        }
+        
         @media (max-width: 600px) {
             .two-columns {
                 flex-direction: column;
+            }
+            
+            .day-inputs {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -299,8 +355,80 @@
             </div>
         </div>
     </div>
+    
+    <div class="container">
+        <h2>Carga Crônica vs Carga Aguda</h2>
+        <p>Insira a carga de treino (duração × RPE) para os últimos 28 dias:</p>
+        
+        <h3>Cargas dos Últimos 7 Dias (Carga Aguda)</h3>
+        <div class="day-inputs">
+            <div class="day-input">
+                <label for="day1">Dia 1 (hoje):</label>
+                <input type="number" id="day1" placeholder="0" min="0">
+            </div>
+            <div class="day-input">
+                <label for="day2">Dia 2:</label>
+                <input type="number" id="day2" placeholder="0" min="0">
+            </div>
+            <div class="day-input">
+                <label for="day3">Dia 3:</label>
+                <input type="number" id="day3" placeholder="0" min="0">
+            </div>
+            <div class="day-input">
+                <label for="day4">Dia 4:</label>
+                <input type="number" id="day4" placeholder="0" min="0">
+            </div>
+            <div class="day-input">
+                <label for="day5">Dia 5:</label>
+                <input type="number" id="day5" placeholder="0" min="0">
+            </div>
+            <div class="day-input">
+                <label for="day6">Dia 6:</label>
+                <input type="number" id="day6" placeholder="0" min="0">
+            </div>
+            <div class="day-input">
+                <label for="day7">Dia 7:</label>
+                <input type="number" id="day7" placeholder="0" min="0">
+            </div>
+        </div>
+        
+        <h3>Cargas das 3 Semanas Anteriores (21 dias - Carga Crônica)</h3>
+        <div class="form-group">
+            <label>Média diária (duração × RPE):</label>
+            <input type="number" id="avgPastWeeks" placeholder="Média diária das últimas 3 semanas" min="0">
+        </div>
+        
+        <button onclick="calcularRazaoAcwr()">Calcular Razão A:C</button>
+        
+        <div id="razaoPainel" style="display: none;">
+            <div id="razaoIndicator" class="ratio-indicator"></div>
+            <div class="chart-container">
+                <canvas id="acwrChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <span>Alto Risco (>1.5)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f39c12;"></div>
+                    <span>Risco Moderado (1.3-1.5)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2ecc71;"></div>
+                    <span>Ideal (0.8-1.3)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <span>Subtreino (<0.8)</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        let acwrChart = null;
+        
         function calcularCiclo() {
             const email = document.getElementById("email").value;
             const nome = document.getElementById("nome").value;
@@ -424,6 +552,188 @@
             document.getElementById("loadBar").style.width = percentual + "%";
             document.getElementById("loadBar").style.backgroundColor = cor;
             document.getElementById("loadLevel").textContent = status;
+            
+            // Preencher o campo do dia 1 com a carga atual
+            document.getElementById("day1").value = carga;
+        }
+        
+        function calcularRazaoAcwr() {
+            // Obter valores da última semana (carga aguda)
+            const day1 = parseFloat(document.getElementById("day1").value) || 0;
+            const day2 = parseFloat(document.getElementById("day2").value) || 0;
+            const day3 = parseFloat(document.getElementById("day3").value) || 0;
+            const day4 = parseFloat(document.getElementById("day4").value) || 0;
+            const day5 = parseFloat(document.getElementById("day5").value) || 0;
+            const day6 = parseFloat(document.getElementById("day6").value) || 0;
+            const day7 = parseFloat(document.getElementById("day7").value) || 0;
+            
+            // Calcular média da carga aguda (última semana)
+            const cargaAguda = (day1 + day2 + day3 + day4 + day5 + day6 + day7) / 7;
+            
+            // Obter média das últimas 3 semanas (carga crônica)
+            const cargaCronica = parseFloat(document.getElementById("avgPastWeeks").value) || 0;
+            
+            // Calcular razão A:C
+            let razaoAC = 0;
+            if (cargaCronica > 0) {
+                razaoAC = cargaAguda / cargaCronica;
+            }
+            
+            // Formatação da razão para 2 casas decimais
+            const razaoFormatada = razaoAC.toFixed(2);
+            
+            // Determinar a classificação da razão
+            let classificacao = "";
+            let cor = "";
+            
+            if (razaoAC > 1.5) {
+                classificacao = "ALTO RISCO DE LESÃO";
+                cor = "#e74c3c"; // Vermelho
+            } else if (razaoAC >= 1.3) {
+                classificacao = "RISCO MODERADO DE LESÃO";
+                cor = "#f39c12"; // Laranja
+            } else if (razaoAC >= 0.8) {
+                classificacao = "ZONA IDEAL";
+                cor = "#2ecc71"; // Verde
+            } else {
+                classificacao = "SUBTREINO";
+                cor = "#3498db"; // Azul
+            }
+            
+            // Exibir o painel
+            document.getElementById("razaoPainel").style.display = "block";
+            
+            // Atualizar o indicador de razão
+            const razaoIndicator = document.getElementById("razaoIndicator");
+            razaoIndicator.textContent = `Razão Carga Aguda:Crônica = ${razaoFormatada} (${classificacao})`;
+            razaoIndicator.style.backgroundColor = cor;
+            razaoIndicator.style.color = "#fff";
+            
+            // Criar ou atualizar o gráfico
+            criarGraficoAcwr(razaoAC);
+        }
+        
+        function criarGraficoAcwr(razaoAC) {
+            const ctx = document.getElementById('acwrChart').getContext('2d');
+            
+            // Limpar gráfico anterior se existir
+            if (acwrChart) {
+                acwrChart.destroy();
+            }
+            
+            // Criar dados para o gráfico de calibre (gauge)
+            const data = {
+                labels: ['Subtreino', 'Ideal', 'Moderado', 'Alto Risco'],
+                datasets: [
+                    {
+                        data: [0.8, 0.5, 0.2, 0.5], // Fatias do gráfico
+                        backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c'],
+                        borderWidth: 0
+                    },
+                    {
+                        data: [0, 0, 0, 0, 2], // Esta linha é para o ponteiro
+                        backgroundColor: 'transparent',
+                        borderWidth: 0
+                    }
+                ]
+            };
+            
+            // Calcular a posição do ponteiro
+            const ponteiroPosicao = calcularPosicaoPonteiro(razaoAC);
+            
+            // Criar o gráfico
+            acwrChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    cutout: '70%',
+                    circumference: 180,
+                    rotation: 270,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            enabled: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Razão Carga Aguda : Carga Crônica',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        subtitle: {
+                            display: true,
+                            text: razaoAC.toFixed(2),
+                            font: {
+                                size: 24,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 10
+                            }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            bottom: 30
+                        }
+                    },
+                    animation: {
+                        duration: 500
+                    }
+                },
+                plugins: [{
+                    id: 'ponteiro',
+                    afterDatasetsDraw(chart) {
+                        const {ctx, chartArea, scales} = chart;
+                        
+                        // Desenhar o ponteiro
+                        const centerX = (chartArea.left + chartArea.right) / 2;
+                        const centerY = chartArea.bottom;
+                        const radius = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
+                        
+                        // Ângulo baseado na razão (0 a 180 graus)
+                        const angulo = (ponteiroPosicao * Math.PI);
+                        
+                        // Desenhar ponteiro
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(
+                            centerX + Math.cos(angulo) * radius * 0.8,
+                            centerY + Math.sin(angulo) * radius * 0.8
+                        );
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = '#2c3e50';
+                        ctx.stroke();
+                        
+                        // Círculo no centro
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                }]
+            });
+        }
+        
+        function calcularPosicaoPonteiro(razao) {
+            // Converte a razão para uma posição no gráfico de 0 a 1
+            // onde 0 é 0.0, 0.5 é 1.0 e 1 é 2.0+
+            let posicao;
+            
+            if (razao <= 0) {
+                posicao = 0;
+            } else if (razao >= 2) {
+                posicao = 1;
+            } else {
+                posicao = razao / 2;
+            }
+            
+            return posicao;
         }
     </script>
 </body>
