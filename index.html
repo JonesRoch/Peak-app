@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestão de Ciclo Menstrual e Forma</title>
+</head>
+<body>
+    <h2>Informações da Atleta</h2>
+    <label>Email:</label>
+    <input type="email" id="email"><br><br>
+
+    <h2>Informações do Ciclo Menstrual</h2>
+    <label>Data do último período:</label>
+    <input type="date" id="dataUltimoPeriodo"><br><br>
+
+    <label>Duração média do ciclo (em dias):</label>
+    <input type="number" id="duracaoCiclo" value="28"><br><br>
+
+    <button onclick="calcularCiclo()">Calcular Fase do Ciclo</button>
+    <p id="resultadoCiclo"></p>
+
+    <hr>
+
+    <h2>Dados do Treino</h2>
+    <label>Duração do treino (min):</label>
+    <input type="number" id="duracaoTreino"><br><br>
+
+    <label>RPE (1-10):</label>
+    <input type="number" id="rpe"><br><br>
+
+    <button onclick="avaliarForma()">Analisar Forma</button>
+    <p id="resultadoForma"></p>
+
+    <script>
+        function calcularCiclo() {
+            const email = document.getElementById("email").value;
+            const dataUltimoPeriodo = new Date(document.getElementById("dataUltimoPeriodo").value);
+            const duracaoCiclo = parseInt(document.getElementById("duracaoCiclo").value);
+            const hoje = new Date();
+
+            const diasPassados = Math.floor((hoje - dataUltimoPeriodo) / (1000 * 60 * 60 * 24));
+            const diaDoCiclo = diasPassados % duracaoCiclo;
+
+            let fase = "";
+            if (diaDoCiclo <= 5) {
+                fase = "Menstruação";
+            } else if (diaDoCiclo <= 13) {
+                fase = "Folicular";
+            } else if (diaDoCiclo <= 16) {
+                fase = "Ovulação";
+            } else {
+                fase = "Lútea";
+            }
+
+            document.getElementById("resultadoCiclo").innerText = `Email: ${email}\nDia ${diaDoCiclo} do ciclo - Fase: ${fase}`;
+        }
+
+        function avaliarForma() {
+            const duracao = parseFloat(document.getElementById("duracaoTreino").value);
+            const rpe = parseFloat(document.getElementById("rpe").value);
+            const carga = duracao * rpe;
+
+            let status = "";
+            if (carga >= 400) {
+                status = "Alta carga - Risco de fadiga (baixa de forma)";
+            } else if (carga >= 200) {
+                status = "Carga ideal - Pico de forma";
+            } else {
+                status = "Carga leve - Possível subtreino";
+            }
+
+            document.getElementById("resultadoForma").innerText = `Carga do treino: ${carga} - ${status}`;
+        }
+    </script>
+</body>
+</html>
+
