@@ -6,137 +6,114 @@
 
   <!-- Tailwind CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Link para o CSS externo -->
-  <link rel="stylesheet" href="css/style.css">
 
   <style>
     body {
       font-family: 'Inter', sans-serif;
     }
-
-    .progress-bar {
-      height: 25px;
-      border-radius: 12px;
-      background: #f3f4f6;
-    }
-    .progress-bar span {
-      display: block;
-      height: 100%;
-      border-radius: 12px;
-    }
-
-    /* Ajustando layout para a página web mais interativa */
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-    }
-    .section {
-      width: 45%;
-      background-color: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-gray-100 text-gray-800 flex flex-col items-center justify-start min-h-screen">
 
-  <!-- Seção de Login -->
-  <div class="container">
-    <div class="section w-full max-w-sm">
-      <h1 class="text-2xl font-bold text-center mb-6">Login</h1>
-      <label class="block mb-2">Email:</label>
-      <input type="email" id="loginEmail" class="w-full p-2 border rounded mb-4" placeholder="exemplo@email.com">
-      
-      <label class="block mb-2">Senha:</label>
-      <input type="password" id="loginSenha" class="w-full p-2 border rounded mb-6" placeholder="********">
-
-      <button onclick="fazerLogin()" class="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600 transition">
-        Entrar
-      </button>
+  <!-- Caixa de Login -->
+  <div class="w-full p-4 flex justify-between items-center bg-white shadow-md">
+    <div class="text-xl font-bold">Login</div>
+    <div>
+      <input type="email" id="loginEmail" class="p-2 border rounded" placeholder="Email">
+      <input type="password" id="loginSenha" class="p-2 border rounded ml-2" placeholder="Senha">
+      <button onclick="fazerLogin()" class="bg-blue-500 text-white p-2 rounded ml-2 hover:bg-blue-600">Entrar</button>
     </div>
   </div>
 
-  <!-- Seção Principal (Gestão de Ciclo Menstrual e Forma) -->
-  <div class="container mt-8">
-    <!-- Informações da Atleta e Ciclo Menstrual -->
-    <div class="section w-full max-w-lg">
-      <h2 class="text-xl font-semibold mb-4">Informações da Atleta e Ciclo Menstrual</h2>
-      <label class="block mb-2">Email:</label>
-      <input type="email" id="email" class="w-full p-2 border rounded mb-4" placeholder="exemplo@email.com">
+  <!-- Dados Pessoais -->
+  <div class="bg-white p-8 mt-6 rounded-lg shadow-lg w-4/5 max-w-4xl">
+    <h1 class="text-2xl font-bold text-center mb-6">Gestão de Ciclo Menstrual e Forma</h1>
 
-      <label class="block mb-2">Data do último período:</label>
+    <!-- Informações da Atleta -->
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Informações da Atleta</h2>
+      <label class="block mb-1">Nome:</label>
+      <input type="text" id="nomeAtleta" class="w-full p-2 border rounded mb-4" placeholder="Nome da atleta">
+    </div>
+
+    <!-- Ciclo Menstrual -->
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Informações do Ciclo Menstrual</h2>
+      <label class="block mb-1">Data do último período:</label>
       <input type="date" id="dataUltimoPeriodo" class="w-full p-2 border rounded mb-4">
 
-      <label class="block mb-2">Duração média do ciclo (em dias):</label>
+      <label class="block mb-1">Duração média do ciclo (em dias):</label>
       <input type="number" id="duracaoCiclo" value="28" class="w-full p-2 border rounded mb-4">
 
       <button onclick="calcularCiclo()" class="bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-600 transition">
         Calcular Fase do Ciclo
       </button>
       <p id="resultadoCiclo" class="mt-2 text-sm text-gray-700"></p>
-
-      <!-- Barra de progresso com as fases do ciclo menstrual -->
-      <div class="progress-bar mt-4">
-        <span id="barraCiclo" class="bg-blue-500"></span>
-      </div>
     </div>
 
-    <!-- Dados do Treino e Gráfico Carga -->
-    <div class="section w-full max-w-lg">
-      <h2 class="text-xl font-semibold mb-4">Dados do Treino</h2>
-      <label class="block mb-2">Duração do treino (min):</label>
+    <hr class="my-4">
+
+    <!-- Dados do Treino -->
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Dados do Treino</h2>
+      <label class="block mb-1">Duração do treino (min):</label>
       <input type="number" id="duracaoTreino" class="w-full p-2 border rounded mb-4">
 
-      <label class="block mb-2">RPE (1-10):</label>
+      <label class="block mb-1">RPE (1-10):</label>
       <input type="number" id="rpe" class="w-full p-2 border rounded mb-4">
 
       <button onclick="avaliarForma()" class="bg-green-500 text-white w-full py-2 rounded hover:bg-green-600 transition">
         Analisar Forma
       </button>
       <p id="resultadoForma" class="mt-2 text-sm text-gray-700"></p>
+    </div>
 
-      <!-- Gráfico Carga Aguda vs Carga Crônica -->
-      <div class="mt-6">
-        <h3 class="text-lg font-semibold mb-2">Relação Carga Aguda vs Carga Crônica</h3>
-        <div class="space-y-4">
-          <div class="flex items-center">
-            <div class="w-1/4 text-sm font-semibold">Carga Aguda</div>
-            <div class="w-3/4 bg-green-500 h-4 rounded" id="graficoCargaAguda"></div>
-          </div>
-          <div class="flex items-center">
-            <div class="w-1/4 text-sm font-semibold">Carga Crônica</div>
-            <div class="w-3/4 bg-yellow-500 h-4 rounded" id="graficoCargaCronica"></div>
-          </div>
+    <!-- Gráficos e Barras -->
+    <div class="mt-8">
+      <div class="text-center">
+        <h3 class="text-lg font-semibold mb-2">Fases do Ciclo Menstrual</h3>
+        <div class="flex space-x-4 justify-center">
+          <div class="w-24 bg-blue-400 text-white p-2 rounded text-center">Menstruação</div>
+          <div class="w-24 bg-green-400 text-white p-2 rounded text-center">Folicular</div>
+          <div class="w-24 bg-yellow-400 text-white p-2 rounded text-center">Ovulação</div>
+          <div class="w-24 bg-red-400 text-white p-2 rounded text-center">Lútea</div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold mb-2 text-center">Carga de Treino nos Últimos 7 Dias</h3>
+        <div class="relative h-16 bg-gray-200 rounded-xl">
+          <div class="absolute top-0 left-0 h-full bg-blue-500" style="width: 70%"></div>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h3 class="text-lg font-semibold mb-2 text-center">Fase Atual do Ciclo</h3>
+        <div class="relative h-16 bg-gray-200 rounded-xl">
+          <div class="absolute top-0 left-0 h-full bg-blue-500" style="width: 30%"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- JS -->
+  <!-- JavaScript -->
   <script>
-    let cargaHistorico = [];
-
     function fazerLogin() {
       const email = document.getElementById("loginEmail").value;
       const senha = document.getElementById("loginSenha").value;
 
       if (email && senha) {
         alert("Login bem-sucedido!");
-        // Aqui você pode adicionar a lógica de autenticação real
       } else {
         alert("Por favor, preencha os campos de email e senha.");
       }
     }
 
     function calcularCiclo() {
-      const email = document.getElementById("email").value;
+      const nome = document.getElementById("nomeAtleta").value;
       const dataUltimoPeriodo = new Date(document.getElementById("dataUltimoPeriodo").value);
       const duracaoCiclo = parseInt(document.getElementById("duracaoCiclo").value);
       const hoje = new Date();
@@ -144,40 +121,24 @@
       const diaDoCiclo = diasPassados % duracaoCiclo;
 
       let fase = "";
-      let cor = "";
       if (diaDoCiclo <= 5) {
         fase = "Menstruação";
-        cor = "bg-red-500";
       } else if (diaDoCiclo <= 13) {
         fase = "Folicular";
-        cor = "bg-yellow-500";
       } else if (diaDoCiclo <= 16) {
         fase = "Ovulação";
-        cor = "bg-green-500";
       } else {
         fase = "Lútea";
-        cor = "bg-purple-500";
       }
 
       document.getElementById("resultadoCiclo").innerText =
-        `Email: ${email}\nDia ${diaDoCiclo} do ciclo - Fase: ${fase}`;
-
-      // Atualizando barra de progresso
-      const progresso = (diaDoCiclo / duracaoCiclo) * 100;
-      const barraCiclo = document.getElementById("barraCiclo");
-      barraCiclo.style.width = `${progresso}%`;
-      barraCiclo.classList.remove("bg-blue-500", "bg-yellow-500", "bg-red-500", "bg-green-500", "bg-purple-500");
-      barraCiclo.classList.add(cor);
+        `${nome} - Dia ${diaDoCiclo} do ciclo - Fase: ${fase}`;
     }
 
     function avaliarForma() {
       const duracao = parseFloat(document.getElementById("duracaoTreino").value);
       const rpe = parseFloat(document.getElementById("rpe").value);
       const carga = duracao * rpe;
-
-      // Adicionando carga ao histórico
-      cargaHistorico.push(carga);
-      if (cargaHistorico.length > 7) cargaHistorico.shift();  // Limita o histórico a 7 dias (carga semanal)
 
       let status = "";
       if (carga >= 400) {
@@ -190,17 +151,8 @@
 
       document.getElementById("resultadoForma").innerText =
         `Carga do treino: ${carga} - ${status}`;
-
-      // Atualizando gráfico Carga Aguda vs Carga Crônica
-      const cargaAguda = cargaHistorico[cargaHistorico.length - 1];
-      const cargaCronica = cargaHistorico.reduce((sum, val) => sum + val, 0) / cargaHistorico.length;
-
-      const cargaAgudaWidth = Math.min(cargaAguda / 500, 1) * 100;  // Máximo de 100%
-      const cargaCronicaWidth = Math.min(cargaCronica / 500, 1) * 100;  // Máximo de 100%
-
-      document.getElementById("graficoCargaAguda").style.width = `${cargaAgudaWidth}%`;
-      document.getElementById("graficoCargaCronica").style.width = `${cargaCronicaWidth}%`;
     }
   </script>
+
 </body>
 </html>
