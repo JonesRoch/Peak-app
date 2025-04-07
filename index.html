@@ -95,7 +95,14 @@
 
     <!-- Caixa de Login -->
     <div class="header flex justify-between items-center">
-      <div class="text-lg font-semibold">Login</div>
+      <div class="flex items-center">
+        <!-- Logo SVG -->
+        <svg width="100" height="50" xmlns="http://www.w3.org/2000/svg" class="mr-4">
+          <text x="0" y="40" font-family="Arial, sans-serif" font-size="36" fill="black">PEAK</text>
+          <polygon points="100,40 110,10 120,40" fill="black" />
+        </svg>
+        <div class="text-lg font-semibold">Login</div>
+      </div>
       <div class="flex">
         <input type="email" id="loginEmail" class="input-field" placeholder="Email">
         <input type="password" id="loginSenha" class="input-field ml-2" placeholder="Senha">
@@ -173,8 +180,7 @@
 
       if (email && senha) {
         alert("Login bem-sucedido!");
-        // Redireciona para a página de performance após o login
-        window.location.href = "dashboard.html"; // Substitua "dashboard.html" com o caminho real da sua página de performance
+        window.location.href = "dashboard.html"; // Substituir pelo caminho real
       } else {
         alert("Por favor, preencha os campos de email e senha.");
       }
