@@ -3,155 +3,233 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard de Performance</title>
+  <title>Gestão de Ciclo Menstrual e Forma</title>
+
+  <!-- Tailwind CSS CDN -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
-    /* Estilos para os quadros */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f8fb;
+      color: #4a4a4a;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header {
+      background-color: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      border-radius: 10px;
+      margin-top: 30px;
+    }
+    .input-field {
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      padding: 12px;
+      width: 100%;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      color: #333;
+      transition: all 0.3s ease;
+    }
+    .input-field:focus {
+      border-color: #5c6bc0;
+      outline: none;
+    }
+    .button {
+      background-color: #5c6bc0;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #3f51b5;
+    }
     .card {
       background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
     }
-
-    .rpe-bar {
-      display: flex;
-      width: 100%;
-      background-color: #e0e0e0;
-      height: 30px;
-      border-radius: 15px;
-      position: relative;
+    .info-text {
+      font-size: 1.1rem;
+      color: #555;
     }
-
-    .rpe-level {
-      height: 100%;
+    .header-title {
       text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 15px;
-      color: white;
-      font-weight: bold;
+      font-size: 2rem;
+      color: #333;
+      font-weight: 700;
     }
-
-    .rpe-1 { background-color: #00FF00; }
-    .rpe-2 { background-color: #66FF66; }
-    .rpe-3 { background-color: #99FF99; }
-    .rpe-4 { background-color: #FFFF66; }
-    .rpe-5 { background-color: #FFCC00; }
-    .rpe-6 { background-color: #FF6600; }
-    .rpe-7 { background-color: #FF3300; }
-    .rpe-8 { background-color: #FF0000; }
-    .rpe-9 { background-color: #B20000; }
-    .rpe-10 { background-color: #800000; }
-
-    /* Barra de Progresso */
-    .progress-bar {
-      height: 20px;
-      border-radius: 10px;
+    .phase-bar {
+      display: flex;
+      justify-content: space-between;
       margin-top: 20px;
+    }
+    .phase-bar div {
+      flex: 1;
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      color: white;
+      font-weight: 600;
+    }
+    .menstruation { background-color: #ef5350; }
+    .follicular { background-color: #66bb6a; }
+    .ovulation { background-color: #ffa726; }
+    .luteal { background-color: #7e57c2; }
+    .logo {
+      width: 60px;
+      height: auto;
+      margin-right: 15px;
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body>
 
-  <!-- Cabeçalho -->
-  <header class="bg-blue-600 p-4 text-white text-center">
-    <h1 class="text-2xl font-bold">Dashboard de Performance</h1>
-  </header>
+  <div class="container">
 
-  <!-- Conteúdo do Dashboard -->
-  <div class="max-w-6xl mx-auto p-6">
-
-    <!-- Quadro 1: Esforço Relativo -->
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-4 text-center">Esforço Relativo</h2>
-      <div class="rpe-bar">
-        <div class="rpe-level rpe-1" style="width: 10%;">1</div>
-        <div class="rpe-level rpe-2" style="width: 10%;">2</div>
-        <div class="rpe-level rpe-3" style="width: 10%;">3</div>
-        <div class="rpe-level rpe-4" style="width: 10%;">4</div>
-        <div class="rpe-level rpe-5" style="width: 10%;">5</div>
-        <div class="rpe-level rpe-6" style="width: 10%;">6</div>
-        <div class="rpe-level rpe-7" style="width: 10%;">7</div>
-        <div class="rpe-level rpe-8" style="width: 10%;">8</div>
-        <div class="rpe-level rpe-9" style="width: 10%;">9</div>
-        <div class="rpe-level rpe-10" style="width: 10%;">10</div>
+    <!-- Caixa de Login -->
+    <div class="header flex justify-between items-center">
+      <div class="flex items-center">
+        <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,10 90,90 10,90" fill="#5c6bc0"/>
+          <text x="50%" y="97%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="#4a4a4a" font-family="Inter">PEAK</text>
+        </svg>
+        <span class="text-lg font-semibold">Login</span>
       </div>
-      <div class="text-center mt-2 text-sm text-gray-600">
-        <p class="inline-block px-2">1 - Muito Leve</p>
-        <p class="inline-block px-2">5 - Moderado</p>
-        <p class="inline-block px-2">10 - Máximo Esforço</p>
+      <div class="flex">
+        <input type="email" id="loginEmail" class="input-field" placeholder="Email">
+        <input type="password" id="loginSenha" class="input-field ml-2" placeholder="Senha">
+        <button onclick="fazerLogin()" class="button ml-2">Entrar</button>
       </div>
     </div>
 
-    <!-- Quadro 2: Fase do Ciclo Menstrual -->
+    <!-- Conteúdo -->
     <div class="card">
-      <h2 class="text-xl font-semibold mb-4 text-center">Fase do Ciclo Menstrual</h2>
-      <div class="flex justify-between">
-        <div class="text-center">
-          <h3 class="text-lg font-semibold">Fase Atual</h3>
-          <div id="faseCiclo" class="text-xl font-bold text-green-600">Folicular</div>
+      <h1 class="header-title">Gestão de Ciclo Menstrual e Forma</h1>
+
+      <!-- Informações da Atleta -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold">Informações da Atleta</h2>
+        <label class="block mb-2">Nome:</label>
+        <input type="text" id="nomeAtleta" class="input-field" placeholder="Nome da atleta">
+      </div>
+
+      <!-- Ciclo Menstrual -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold">Informações do Ciclo Menstrual</h2>
+        <label class="block mb-2">Data do último período:</label>
+        <input type="date" id="dataUltimoPeriodo" class="input-field">
+
+        <label class="block mb-2">Duração média do ciclo (em dias):</label>
+        <input type="number" id="duracaoCiclo" value="28" class="input-field">
+
+        <button onclick="calcularCiclo()" class="button">Calcular Fase do Ciclo</button>
+        <p id="resultadoCiclo" class="info-text mt-2"></p>
+      </div>
+
+      <!-- Dados do Treino -->
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold">Dados do Treino</h2>
+        <label class="block mb-2">Duração do treino (min):</label>
+        <input type="number" id="duracaoTreino" class="input-field">
+
+        <label class="block mb-2">RPE (1-10):</label>
+        <input type="number" id="rpe" class="input-field">
+
+        <button onclick="avaliarForma()" class="button">Analisar Forma</button>
+        <p id="resultadoForma" class="info-text mt-2"></p>
+      </div>
+
+      <!-- Fases do Ciclo -->
+      <div class="phase-bar">
+        <div class="menstruation">Menstruação</div>
+        <div class="follicular">Folicular</div>
+        <div class="ovulation">Ovulação</div>
+        <div class="luteal">Lútea</div>
+      </div>
+
+      <!-- Gráficos e Barras -->
+      <div class="mt-8">
+        <h3 class="text-xl font-semibold text-center">Carga de Treino nos Últimos 7 Dias</h3>
+        <div class="relative h-16 bg-gray-200 rounded-xl">
+          <div class="absolute top-0 left-0 h-full bg-blue-500" style="width: 70%"></div>
         </div>
-        <div class="text-center">
-          <h3 class="text-lg font-semibold">Indicador de Expectativa</h3>
-          <div id="indicadorFase" class="text-3xl font-bold text-red-600">↓</div>
+      </div>
+
+      <div class="mt-8">
+        <h3 class="text-xl font-semibold text-center">Fase Atual do Ciclo</h3>
+        <div class="relative h-16 bg-gray-200 rounded-xl">
+          <div class="absolute top-0 left-0 h-full bg-blue-500" style="width: 30%"></div>
         </div>
       </div>
     </div>
-
-    <!-- Quadro 3: Gráfico de Carga Aguda e Crônica -->
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-4 text-center">Gráfico de Carga Aguda e Crônica</h2>
-      <div class="progress-bar bg-green-500 w-3/4 mb-4"></div>
-      <div class="progress-bar bg-yellow-500 w-1/2 mb-4"></div>
-      <div class="progress-bar bg-red-500 w-1/4"></div>
-    </div>
-
-    <!-- Quadro 4: Previsão do Pico de Forma -->
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-4 text-center">Previsão do Pico de Forma</h2>
-      <div class="text-center text-lg font-semibold text-gray-700">
-        O pico de forma será atingido em <span class="text-green-600">13 dias</span> baseado no ciclo menstrual.
-      </div>
-    </div>
-
-    <!-- Quadro 5: Escala RPE -->
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-4 text-center">Escala RPE - Esforço Percebido</h2>
-      <div class="rpe-bar">
-        <div class="rpe-level rpe-1" style="width: 10%;">1</div>
-        <div class="rpe-level rpe-2" style="width: 10%;">2</div>
-        <div class="rpe-level rpe-3" style="width: 10%;">3</div>
-        <div class="rpe-level rpe-4" style="width: 10%;">4</div>
-        <div class="rpe-level rpe-5" style="width: 10%;">5</div>
-        <div class="rpe-level rpe-6" style="width: 10%;">6</div>
-        <div class="rpe-level rpe-7" style="width: 10%;">7</div>
-        <div class="rpe-level rpe-8" style="width: 10%;">8</div>
-        <div class="rpe-level rpe-9" style="width: 10%;">9</div>
-        <div class="rpe-level rpe-10" style="width: 10%;">10</div>
-      </div>
-      <div class="text-center mt-2 text-sm text-gray-600">
-        <p class="inline-block px-2">1 - Muito Leve</p>
-        <p class="inline-block px-2">5 - Moderado</p>
-        <p class="inline-block px-2">10 - Máximo Esforço</p>
-      </div>
-    </div>
-
   </div>
 
+  <!-- JavaScript -->
   <script>
-    // Função para atualizar a fase do ciclo menstrual e o indicador
-    function atualizarFaseCiclo() {
-      const faseAtual = "Ovulação"; // exemplo de fase
-      const indicador = "↑"; // exemplo de indicador
-      document.getElementById("faseCiclo").innerText = faseAtual;
-      document.getElementById("indicadorFase").innerText = indicador;
+    function fazerLogin() {
+      const email = document.getElementById("loginEmail").value;
+      const senha = document.getElementById("loginSenha").value;
+
+      if (email && senha) {
+        alert("Login bem-sucedido!");
+        window.location.href = "dashboard.html";
+      } else {
+        alert("Por favor, preencha os campos de email e senha.");
+      }
     }
 
-    // Chamar a função para atualizar as informações
-    atualizarFaseCiclo();
+    function calcularCiclo() {
+      const nome = document.getElementById("nomeAtleta").value;
+      const dataUltimoPeriodo = new Date(document.getElementById("dataUltimoPeriodo").value);
+      const duracaoCiclo = parseInt(document.getElementById("duracaoCiclo").value);
+      const hoje = new Date();
+      const diasPassados = Math.floor((hoje - dataUltimoPeriodo) / (1000 * 60 * 60 * 24));
+      const diaDoCiclo = diasPassados % duracaoCiclo;
+
+      let fase = "";
+      if (diaDoCiclo <= 5) {
+        fase = "Menstruação";
+      } else if (diaDoCiclo <= 13) {
+        fase = "Folicular";
+      } else if (diaDoCiclo <= 16) {
+        fase = "Ovulação";
+      } else {
+        fase = "Lútea";
+      }
+
+      document.getElementById("resultadoCiclo").innerText =
+        `${nome} - Dia ${diaDoCiclo} do ciclo - Fase: ${fase}`;
+    }
+
+    function avaliarForma() {
+      const duracao = parseFloat(document.getElementById("duracaoTreino").value);
+      const rpe = parseFloat(document.getElementById("rpe").value);
+      const carga = duracao * rpe;
+
+      let status = "";
+      if (carga >= 400) {
+        status = "Alta carga - Risco de fadiga (baixa de forma)";
+      } else if (carga >= 200) {
+        status = "Carga ideal - Pico de forma";
+      } else {
+        status = "Carga leve - Possível subtreino";
+      }
+
+      document.getElementById("resultadoForma").innerText =
+        `Carga do treino: ${carga} - ${status}`;
+    }
   </script>
 
 </body>
