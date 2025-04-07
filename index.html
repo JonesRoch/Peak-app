@@ -87,6 +87,11 @@
     .follicular { background-color: #66bb6a; }
     .ovulation { background-color: #ffa726; }
     .luteal { background-color: #7e57c2; }
+    .logo {
+      width: 60px;
+      height: auto;
+      margin-right: 15px;
+    }
   </style>
 </head>
 <body>
@@ -96,12 +101,11 @@
     <!-- Caixa de Login -->
     <div class="header flex justify-between items-center">
       <div class="flex items-center">
-        <!-- Logo SVG -->
-        <svg width="100" height="50" xmlns="http://www.w3.org/2000/svg" class="mr-4">
-          <text x="0" y="40" font-family="Arial, sans-serif" font-size="36" fill="black">PEAK</text>
-          <polygon points="100,40 110,10 120,40" fill="black" />
+        <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,10 90,90 10,90" fill="#5c6bc0"/>
+          <text x="50%" y="97%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="#4a4a4a" font-family="Inter">PEAK</text>
         </svg>
-        <div class="text-lg font-semibold">Login</div>
+        <span class="text-lg font-semibold">Login</span>
       </div>
       <div class="flex">
         <input type="email" id="loginEmail" class="input-field" placeholder="Email">
@@ -110,7 +114,7 @@
       </div>
     </div>
 
-    <!-- Dados Pessoais -->
+    <!-- Conteúdo -->
     <div class="card">
       <h1 class="header-title">Gestão de Ciclo Menstrual e Forma</h1>
 
@@ -180,7 +184,7 @@
 
       if (email && senha) {
         alert("Login bem-sucedido!");
-        window.location.href = "dashboard.html"; // Substituir pelo caminho real
+        window.location.href = "dashboard.html";
       } else {
         alert("Por favor, preencha os campos de email e senha.");
       }
